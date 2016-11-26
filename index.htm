@@ -51,7 +51,7 @@
 </body>
 <script src="jquery.js" type="text/javascript"></script>
 <script>
-  $(function () {
+  (function ($, geolocation) {
     var mapLink = $("#mapLink");
     var log = $("#log");
     var watchID;
@@ -63,11 +63,11 @@
     };
 
     $("#startWatchButton").click(function () {
-      watchID = navigator.geolocation.watchPosition(showPosition, positionError, options);
+      watchID = geolocation.watchPosition(showPosition, positionError, options);
     });
 
     $("#clearWatchButton").click(function () {
-      navigator.geolocation.clearWatch(watchID);
+      geolocation.clearWatch(watchID);
       logMsg("Stopped watching for location changes.");
     });
 
@@ -117,7 +117,7 @@
     }
 
     mapLink.hide();
-  });
+  })(jQuery, window.navigator.geolocation);
 
 </script>
 </html>
