@@ -1,121 +1,122 @@
 ﻿<!doctype html>
 <html lang="en">
-    <head>
-        <title>Geolocation: Watch Position</title>
-        <link rel="Stylesheet" href="/global.css" type="text/css" />
-        <style>
-        label 
-        {
-            display:block;
-            margin-top:12px;
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Geolocation: Watch Position</title>
+    <style>
+        label {
+            display: block;
+            margin-top: 12px;
         }
-        </style>
-    </head>
-    <body>
-        <div id="container">
-            <h1>Watch Position</h1>
-            <section>
-                <input type="button" id="startWatchButton" value="Watch Location" />
-                <input type="button" id="clearWatchButton" value="Stop" />
-                <a href="" id="mapLink" target="_blank">View Map</a>
+    </style>
+</head>
+<body>
+<div id="container">
+    <h1>Watch Position</h1>
+    <section>
+        <input type="button" id="startWatchButton" value="Watch Location"/>
+        <input type="button" id="clearWatchButton" value="Stop"/>
+        <a href="" id="mapLink" target="_blank">View Map</a>
 
-                <label for="lat">Latitude:</label>
-                <input type="text" id="lat" name="lat" />
-            
-                <label for="long">Longitude:</label>
-                <input type="text" id="long" name="long" />
+        <label for="lat">Latitude:</label>
+        <input type="text" id="lat" name="lat"/>
 
-                <label for="alt">Altitude</label>
-                <input type="text" id="alt" name="alt" />
+        <label for="long">Longitude:</label>
+        <input type="text" id="long" name="long"/>
 
-                <label for="acc">Accuracy</label>
-                <input type="text" id="acc" name="acc" />
+        <label for="alt">Altitude</label>
+        <input type="text" id="alt" name="alt"/>
 
-                <label for="altAcc">Altitude Accuracy</label>
-                <input type="text" id="altAcc" name="altAcc" />
+        <label for="acc">Accuracy</label>
+        <input type="text" id="acc" name="acc"/>
 
-                <label for="heading">Heading</label>
-                <input type="text" id="heading" name="heading" />
+        <label for="altAcc">Altitude Accuracy</label>
+        <input type="text" id="altAcc" name="altAcc"/>
 
-                <label for="speed">Speed</label>
-                <input type="text" id="speed" name="speed" />
+        <label for="heading">Heading</label>
+        <input type="text" id="heading" name="heading"/>
 
-                <label for="timestamp">Timestamp</label>
-                <input type="text" id="timestamp" name="timestamp" />
+        <label for="speed">Speed</label>
+        <input type="text" id="speed" name="speed"/>
 
-                <ul id="log"></ul>
-            </section>
-        </div>
-    </body>
-    <script src="jquery.js" type="text/javascript"></script>
-    <script>
-        $(function () {
-            var mapLink = $("#mapLink");
-            var log = $("#log");
-            var watchID;
+        <label for="timestamp">Timestamp</label>
+        <input type="text" id="timestamp" name="timestamp"/>
 
-            var options = {
-              enableHighAccuracy: true,
-              timeout: 10000,
-              maximumAge: 1000
-            };
+        <ul id="log"></ul>
+    </section>
+</div>
+</body>
+<script src="jquery.js" type="text/javascript"></script>
+<script>
+  $(function () {
+    var mapLink = $("#mapLink");
+    var log = $("#log");
+    var watchID;
 
-            $("#startWatchButton").click(function () {
-                watchID = navigator.geolocation.watchPosition(showPosition, positionError, options);
-            });
+    var options = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 1000
+    };
 
-            $("#clearWatchButton").click(function () {
-                navigator.geolocation.clearWatch(watchID);
-                logMsg("Stopped watching for location changes.");
-            });
+    $("#startWatchButton").click(function () {
+      watchID = navigator.geolocation.watchPosition(showPosition, positionError, options);
+    });
 
-            function showPosition(position) {
+    $("#clearWatchButton").click(function () {
+      navigator.geolocation.clearWatch(watchID);
+      logMsg("Stopped watching for location changes.");
+    });
 
-                logMsg("Showing current position.");
+    function showPosition(position) {
 
-                var coords = position.coords;
+      logMsg("Showing current position.");
 
-                $("#lat").val(coords.latitude);
-                $("#long").val(coords.longitude);
+      var coords = position.coords;
 
-                $("#acc").val(coords.accuracy);
-                $("#alt").val(coords.altitude);
-                $("#altAcc").val(coords.altitudeAccuracy);
-                $("#heading").val(coords.heading);
-                $("#speed").val(coords.speed);
-                $("#timestamp").val(coords.timestamp);
+      $("#lat").val(coords.latitude);
+      $("#long").val(coords.longitude);
 
-                // Map your current position by latitude/longitude coordinates
-                mapLink.attr("href", "http://maps.google.com/maps?q=" +
-                    $("#lat").val() + ",+" +
-                    $("#long").val() + "+(You+are+here!)&iwloc=A&hl=en");
+      $("#acc").val(coords.accuracy);
+      $("#alt").val(coords.altitude);
+      $("#altAcc").val(coords.altitudeAccuracy);
+      $("#heading").val(coords.heading);
+      $("#speed").val(coords.speed);
+      $("#timestamp").val(coords.timestamp);
 
-                mapLink.show();
-            }
+      // Map your current position by latitude/longitude coordinates
+      mapLink.attr("href", "http://maps.google.com/maps?q=" +
+          $("#lat").val() + ",+" +
+          $("#long").val() + "+(You+are+here!)&iwloc=A&hl=en");
 
-            function positionError(e) {
-                switch (e.code) {
-                    case 0: // UNKNOWN_ERROR
-                        logMsg("The application has encountered an unknown error while trying to determine your current location. Details: " + e.message);
-                        break;
-                    case 1: // PERMISSION_DENIED
-                        logMsg("You chose not to allow this application access to your location.");
-                        break;
-                    case 2: // POSITION_UNAVAILABLE
-                        logMsg("The application was unable to determine your location.");
-                        break;
-                    case 3: // TIMEOUT
-                        logMsg("The request to determine your location has timed out.");
-                        break;
-                }
-            }
+      mapLink.show();
+    }
 
-            function logMsg(msg) {
-                log.append("<li>" + msg + "</li>");
-            }
+    function positionError(e) {
+      switch (e.code) {
+        case 0: // UNKNOWN_ERROR
+          logMsg("The application has encountered an unknown error while trying to determine your current location. Details: " + e.message);
+          break;
+        case 1: // PERMISSION_DENIED
+          logMsg("You chose not to allow this application access to your location.");
+          break;
+        case 2: // POSITION_UNAVAILABLE
+          logMsg("The application was unable to determine your location.");
+          break;
+        case 3: // TIMEOUT
+          logMsg("The request to determine your location has timed out.");
+          break;
+      }
+    }
 
-            mapLink.hide();
-        });
+    function logMsg(msg) {
+      log.append("<li>" + msg + "</li>");
+    }
 
-    </script>    
+    mapLink.hide();
+  });
+
+</script>
 </html>
